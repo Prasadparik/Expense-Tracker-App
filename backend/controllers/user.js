@@ -1,4 +1,5 @@
 //  User  controllers =======================================
+const { where } = require("sequelize");
 const User = require("../models/user");
 
 const addUser = async (req, res) => {
@@ -21,10 +22,17 @@ const logInUser = async (req, res) => {
   console.log("BODY::", req.body);
 
   try {
-    return res.send("User is present");
+    const result = await User.findOne({
+      where: { userEmail: req.body.userEmail },
+    });
+
+    if (req.body.userPassword === result.userPassword) {
+      res.status(200).send("Login Success");
+    } else {
+      res.status(401).send("Password is Wrong");
+    }
   } catch (error) {
-    console.log("ERROR ==> :", error);
-    return res.status(404).send("User not found");
+    res.status(404).send("User not found!");
   }
 };
 

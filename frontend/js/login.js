@@ -15,7 +15,8 @@ async function userLogIn(e) {
   let password = document.getElementById("userPassword").value;
 
   //   Message Toast
-  function toastMessage(color, param) {
+  async function toastMessage(color, param) {
+    await messageBox.removeChild(message);
     let message = document.createElement("Div");
     message.className = `bg-${color}-subtle p-3 fw-medium text-${color} rounded`;
     message.appendChild(document.createTextNode(param));
@@ -30,7 +31,7 @@ async function userLogIn(e) {
         userPassword: password,
       })
       .then((res) => console.log(res));
-    toastMessage("success", `${email} is added successfully`);
+    toastMessage("success", `Log In Success`);
     console.log(`logged in successfully `);
   } catch (error) {
     console.log("Error", error);
