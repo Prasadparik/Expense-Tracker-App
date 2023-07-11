@@ -15,18 +15,27 @@
     <!-- signup form ------------------------------------------------- -->
     <div class="container py-5" style="max-width: 380px">
       <form
-        id="login-form"
+        id="signup-form"
         method="POST"
         class="card p-3 shadow-sm p-3 mb-5 rounded"
       >
-        <h2 class="p-2 text-center pb-3 text-uppercase">Log In</h2>
+        <h2 class="p-2 text-center pb-3 text-uppercase">Sign Up</h2>
 
         <!-- Toast -------------------- -->
         <div id="message-box"></div>
         <!-- ======================== -->
 
         <hr />
-
+        <div class="mb-3">
+          <label for="Name" class="form-label">Name</label>
+          <input
+            id="userName"
+            type="text"
+            class="form-control"
+            aria-describedby="emailHelp"
+            required
+          />
+        </div>
         <div class="mb-3">
           <label for="exampleInputEmail1" class="form-label"
             >Email address</label
@@ -49,15 +58,15 @@
           />
         </div>
         <button type="submit" class="btn btn-dark mt-3 text-uppercase">
-          Log in
+          Sign Up
         </button>
         <button class="btn btn-default mt-2 text-dark-subtle">
-          Don't have an account Sign In ?
+          Already Have Account Log In ?
         </button>
       </form>
     </div>
     <!-- SCRIPT ------------------------------------------------------------------------------ -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="../js/login.js"></script>
+    <script src="../app.js"></script>
   </body>
 </html>

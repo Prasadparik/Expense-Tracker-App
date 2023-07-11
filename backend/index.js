@@ -5,7 +5,6 @@ const bodyParser = require("body-parser");
 
 // DataBase -------------------------------------------
 const sequelize = require("./database");
-const User = require("./models/user");
 
 // middlewares----------------------------------------
 const app = express();

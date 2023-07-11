@@ -1,17 +1,16 @@
 // API Call --------------------------------
 const baseUrl = `http://localhost:8000/api/`;
 
-const signUpForm = document.getElementById("signup-form");
+const logInForm = document.getElementById("login-form");
 const messageBox = document.getElementById("message-box");
 
 // form submit event -------------------------------
 
-signUpForm.addEventListener("submit", userSignUp);
+logInForm.addEventListener("submit", userLogIn);
 
-async function userSignUp(e) {
+async function userLogIn(e) {
   e.preventDefault();
 
-  let name = document.getElementById("userName").value;
   let email = document.getElementById("userEmail").value;
   let password = document.getElementById("userPassword").value;
 
@@ -25,19 +24,20 @@ async function userSignUp(e) {
 
   // Adding user in backend
   try {
-    const result = await axios.post(`${baseUrl}signup`, {
-      userName: name,
-      userEmail: email,
-      userPassword: password,
-    });
-    toastMessage("success", `${name} is added successfully`);
-    console.log(`${result.data} added successfully`);
+    await axios
+      .post(`${baseUrl}login`, {
+        userEmail: email,
+        userPassword: password,
+      })
+      .then((res) => console.log(res));
+    toastMessage("success", `${email} is added successfully`);
+    console.log(`logged in successfully `);
   } catch (error) {
     console.log("Error", error);
     toastMessage("danger", error.response.data);
   }
+
   //   cleaning input fields
-  signUpForm.userName.value = "";
-  signUpForm.userEmail.value = "";
-  signUpForm.userPassword.value = "";
+  logInForm.userEmail.value = "";
+  logInForm.userPassword.value = "";
 }

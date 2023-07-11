@@ -5,17 +5,30 @@ const addUser = async (req, res) => {
   console.log("BODY::", req.body);
 
   try {
-    const result = await User.create({
+    await User.create({
       userName: req.body.userName,
       userEmail: req.body.userEmail,
       userPassword: req.body.userPassword,
     });
-    res.send(`${req.body.userName} added successfully ${result}`);
+    return res.sendStatus(200);
   } catch (error) {
-    console.log(error);
+    console.log("ERROR ==> :", error);
+    return res.status(409).send("Email already register");
+  }
+};
+
+const logInUser = async (req, res) => {
+  console.log("BODY::", req.body);
+
+  try {
+    return res.send("User is present");
+  } catch (error) {
+    console.log("ERROR ==> :", error);
+    return res.status(404).send("User not found");
   }
 };
 
 module.exports = {
   addUser,
+  logInUser,
 };
