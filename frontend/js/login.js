@@ -16,8 +16,7 @@ async function userLogIn(e) {
 
   //   Message Toast
   async function toastMessage(color, param) {
-    await messageBox.removeChild(message);
-    let message = document.createElement("Div");
+    var message = document.createElement("Div");
     message.className = `bg-${color}-subtle p-3 fw-medium text-${color} rounded`;
     message.appendChild(document.createTextNode(param));
     messageBox.appendChild(message);
@@ -32,10 +31,13 @@ async function userLogIn(e) {
       })
       .then((res) => console.log(res));
     toastMessage("success", `Log In Success`);
+    location.href = "../index.html";
     console.log(`logged in successfully `);
   } catch (error) {
     console.log("Error", error);
-    toastMessage("danger", error.response.data);
+    let notifyText = "";
+    if (error.response.status === 401) notifyText = "Password Is Incorrect !!";
+    toastMessage("danger", notifyText);
   }
 
   //   cleaning input fields

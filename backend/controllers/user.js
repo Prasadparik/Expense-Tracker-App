@@ -36,11 +36,13 @@ const logInUser = async (req, res) => {
       where: { userEmail: req.body.userEmail },
     });
 
-    if (req.body.userPassword === result.userPassword) {
-      res.status(200).send("Login Success");
-    } else {
-      res.status(401).send("Password is Wrong");
-    }
+    bcrypt.compare(req.body.userPassword, result.userPassword, (err, check) => {
+      if (check) {
+        res.sendStatus(200);
+      } else {
+        res.sendStatus(401);
+      }
+    });
   } catch (error) {
     res.status(404).send("User not found!");
   }

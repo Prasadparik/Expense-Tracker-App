@@ -16,9 +16,13 @@ app.use(bodyParser.json());
 
 // importing routers
 const userRouter = require("./routes/user");
+const expenseRouter = require("./routes/expense");
 
 // User Routes
 app.use("/api/", userRouter);
+
+// Expense Routes
+app.use("/api/expense", expenseRouter);
 
 // server running on Port ------------------------------
 
