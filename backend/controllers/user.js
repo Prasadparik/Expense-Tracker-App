@@ -1,17 +1,27 @@
 //  User  controllers =======================================
 const { where } = require("sequelize");
 const User = require("../models/user");
+const bcrypt = require("bcrypt");
+
+// ==========================================================
 
 const addUser = async (req, res) => {
   console.log("BODY::", req.body);
 
+  const checkUserExists = await User.findOne({
+    where: { userEmail: req.body.userEmail },
+  });
+  if (checkUserExists) return res.status(400).send("user already exist");
+
   try {
-    await User.create({
-      userName: req.body.userName,
-      userEmail: req.body.userEmail,
-      userPassword: req.body.userPassword,
+    bcrypt.hash(req.body.userPassword, 10, async (err, hash) => {
+      await User.create({
+        userName: req.body.userName,
+        userEmail: req.body.userEmail,
+        userPassword: hash,
+      });
+      return res.sendStatus(200);
     });
-    return res.sendStatus(200);
   } catch (error) {
     console.log("ERROR ==> :", error);
     return res.status(409).send("Email already register");
