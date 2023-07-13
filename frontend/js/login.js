@@ -24,15 +24,17 @@ async function userLogIn(e) {
 
   // Adding user in backend
   try {
-    await axios
-      .post(`${baseUrl}login`, {
-        userEmail: email,
-        userPassword: password,
-      })
-      .then((res) => console.log(res));
+    const result = await axios.post(`${baseUrl}login`, {
+      userEmail: email,
+      userPassword: password,
+    });
+    console.log(result);
     toastMessage("success", `Log In Success`);
-    location.href = "../index.html";
+    console.log("TOKEN :", result.data.data.userName);
+    localStorage.setItem("userIdToken", result.data.token);
+    localStorage.setItem("userName", result.data.data.userName);
     console.log(`logged in successfully `);
+    location.href = "../index.html";
   } catch (error) {
     console.log("Error", error);
     let notifyText = "";

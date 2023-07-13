@@ -2,6 +2,14 @@
 const { where } = require("sequelize");
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
+var jwt = require("jsonwebtoken");
+
+// ==========================================================
+
+function generateAccessToken(obj) {
+  console.log("GEN JWT >>>>>>>>>>>", obj);
+  return jwt.sign(obj, "secretkey");
+}
 
 // ==========================================================
 
@@ -28,6 +36,8 @@ const addUser = async (req, res) => {
   }
 };
 
+// ==================================================================
+
 const logInUser = async (req, res) => {
   console.log("BODY::", req.body);
 
@@ -38,7 +48,15 @@ const logInUser = async (req, res) => {
 
     bcrypt.compare(req.body.userPassword, result.userPassword, (err, check) => {
       if (check) {
-        res.sendStatus(200);
+        res.status(200).json({
+          data: result,
+          token: generateAccessToken({
+            userId: result._id,
+            userName: result.userName,
+            email: result.userEmail,
+            pass: result.userPassword,
+          }),
+        });
       } else {
         res.sendStatus(401);
       }

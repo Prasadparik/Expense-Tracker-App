@@ -19,6 +19,7 @@
         <div class="col-md-3">
           <div class="card p-3 sticky-top">
             <form id="addExpenseFrom" action="" class="form">
+              <h5 id="displayUserName"></h5>
               <h3>Add Expense</h3>
               <label class="form-label mt-4" for="name">Amount:</label>
               <input
@@ -52,25 +53,29 @@
 
         <!-- ============================================================ -->
 
-        <div class="col-md-9 card">
+        <div class="col-md-9">
           <table class="table table">
-            <thead>
+            <thead class="sticky-top shadow-sm rounded">
               <tr>
-                <th scope="col">Amount</th>
-                <th scope="col">Description</th>
-                <th scope="col">Category</th>
-                <th scope="col">Edit</th>
-                <th scope="col">Delete</th>
+                <th class="p-3 bg-dark mt-3 text-white" scope="col">Amount</th>
+                <th class="p-3 bg-dark mt-3 text-white" scope="col">
+                  Description
+                </th>
+                <th class="p-3 bg-dark mt-3 text-white" scope="col">
+                  Category
+                </th>
+                <th class="p-3 bg-dark mt-3 text-white" scope="col">Edit</th>
+                <th class="p-3 bg-dark mt-3 text-white" scope="col">Delete</th>
               </tr>
             </thead>
             <tbody id="expenseTable">
-              <tr>
+              <!-- <tr>
                 <td>Mark</td>
                 <td>Otto</td>
                 <td>@mdosfvnkejvkje vkj</td>
                 <td><button class="btn btn-outline-dark">Edit</button></td>
                 <td><button class="btn btn-outline-danger">Delete</button></td>
-              </tr>
+              </tr> -->
             </tbody>
           </table>
         </div>

@@ -36,6 +36,7 @@ async function userSignUp(e) {
     console.log("Error", error);
     toastMessage("danger", error.response.data);
   }
+
   //   cleaning input fields
   signUpForm.userName.value = "";
   signUpForm.userEmail.value = "";

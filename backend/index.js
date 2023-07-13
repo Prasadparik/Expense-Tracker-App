@@ -17,6 +17,8 @@ app.use(bodyParser.json());
 // importing routers
 const userRouter = require("./routes/user");
 const expenseRouter = require("./routes/expense");
+const User = require("./models/user");
+const Expense = require("./models/expense");
 
 // User Routes
 app.use("/api/", userRouter);
@@ -25,6 +27,9 @@ app.use("/api/", userRouter);
 app.use("/api/expense", expenseRouter);
 
 // server running on Port ------------------------------
+
+User.hasMany(Expense);
+Expense.belongsTo(User);
 
 const runServer = async () => {
   try {

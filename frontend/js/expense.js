@@ -5,6 +5,12 @@ const baseUrl = `http://localhost:8000/api/expense`;
 // ===========================================================
 const addExpenseFrom = document.getElementById("addExpenseFrom");
 const expenseTable = document.getElementById("expenseTable");
+const displayUserName = document.getElementById("displayUserName");
+
+// displayUserName
+let b = document.createElement("b");
+b.appendChild(document.createTextNode(localStorage.getItem("userName")));
+displayUserName.appendChild(b);
 
 // form submit event ------------------
 addExpenseFrom.addEventListener("submit", addExpenseToDB);
@@ -26,14 +32,17 @@ async function addExpenseToDB(e) {
   };
 
   //   Sending data to Backend
+  const token = localStorage.getItem("userIdToken");
 
   try {
-    const response = await axios.post(baseUrl, expenseObj);
+    const response = await axios.post(baseUrl, expenseObj, {
+      headers: { Authorization: token },
+    });
     console.log(response);
   } catch (error) {
     console.log(error);
   }
-
+  location.reload();
   //   clear input fields
   addExpenseFrom.amount.value = "";
   addExpenseFrom.category.value = "";
@@ -43,9 +52,13 @@ async function addExpenseToDB(e) {
 // Get Data From Backend ===========================================
 
 async function getAllExpenseFormBE() {
+  const token = localStorage.getItem("userIdToken");
   try {
-    const resData = await axios.get(baseUrl);
+    const resData = await axios.get(baseUrl, {
+      headers: { Authorization: token },
+    });
     console.log(resData.data);
+
     ShowDataOnFE(resData.data);
   } catch (error) {
     console.log(error);
@@ -57,7 +70,7 @@ getAllExpenseFormBE();
 
 async function ShowDataOnFE(data) {
   // mapping the elements
-  console.warn(data);
+
   const MAPdata = data.map((data) => {
     let tr = document.createElement("tr");
     let tdAmount = document.createElement("td");
@@ -88,5 +101,4 @@ async function ShowDataOnFE(data) {
 
     return expenseTable.appendChild(tr);
   });
-  console.error(MAPdata);
 }
