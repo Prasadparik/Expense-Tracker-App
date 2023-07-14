@@ -3,16 +3,18 @@ const express = require("express");
 const route = express.Router();
 
 const {
-  addExpense,
-  getAllExpense,
-  deleteExpense,
-} = require("../controllers/expense");
+  purchasePremium,
+  updateTransactionStatus,
+} = require("../controllers/purchase");
 const { Authenticate, AuthAddExpense } = require("../middleware/auth");
 
 // User Routes -----------------------------------------
 
-route.post("/", AuthAddExpense, addExpense);
-route.get("/", Authenticate, getAllExpense);
-route.delete("/:id", Authenticate, deleteExpense);
+route.get("/purchase", Authenticate, purchasePremium);
+route.post(
+  "/purchase/updateTransactionStatus",
+  Authenticate,
+  updateTransactionStatus
+);
 
 module.exports = route;

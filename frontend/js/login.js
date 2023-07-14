@@ -28,11 +28,12 @@ async function userLogIn(e) {
       userEmail: email,
       userPassword: password,
     });
-    console.log(result);
+    console.log(result.data.data);
     toastMessage("success", `Log In Success`);
     console.log("TOKEN :", result.data.data.userName);
     localStorage.setItem("userIdToken", result.data.token);
     localStorage.setItem("userName", result.data.data.userName);
+    localStorage.setItem("ispremiumuser", result.data.data.ispremiumuser);
     console.log(`logged in successfully `);
     location.href = "../index.html";
   } catch (error) {

@@ -32,7 +32,28 @@ const getAllExpense = async (req, res) => {
   }
 };
 
+// ------------------------------------------
+
+const deleteExpense = async (req, res) => {
+  try {
+    console.log("getAllExpense BODY ===>", req.token);
+    const result = await Expense.destroy({
+      where: { _id: req.params.id, userId: req.user._id },
+    }).then((data) => {
+      console.log("DELTE DATA >>>", data);
+      if (data === 0) {
+        return res.status(400).json({ message: "Not Deleted!" });
+      }
+    });
+
+    res.send(result.data);
+  } catch (error) {
+    res.send(error);
+  }
+};
+
 module.exports = {
   addExpense,
   getAllExpense,
+  deleteExpense,
 };

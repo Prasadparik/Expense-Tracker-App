@@ -16,6 +16,8 @@ const User = sequelize.define("user", {
   userEmail: { type: Sequelize.STRING, allowNull: false, unique: true },
 
   userPassword: { type: Sequelize.STRING, allowNull: false },
+
+  ispremiumuser: Sequelize.BOOLEAN,
 });
 
 module.exports = User;

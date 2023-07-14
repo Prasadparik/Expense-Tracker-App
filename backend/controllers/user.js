@@ -53,8 +53,7 @@ const logInUser = async (req, res) => {
           token: generateAccessToken({
             userId: result._id,
             userName: result.userName,
-            email: result.userEmail,
-            pass: result.userPassword,
+            ispremiumuser: result.ispremiumuser,
           }),
         });
       } else {
@@ -69,4 +68,5 @@ const logInUser = async (req, res) => {
 module.exports = {
   addUser,
   logInUser,
+  generateAccessToken,
 };

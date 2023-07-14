@@ -6,6 +6,7 @@ const baseUrl = `http://localhost:8000/api/expense`;
 const addExpenseFrom = document.getElementById("addExpenseFrom");
 const expenseTable = document.getElementById("expenseTable");
 const displayUserName = document.getElementById("displayUserName");
+// const premium = document.getElementById("rzp-button1");
 
 // displayUserName
 let b = document.createElement("b");
@@ -14,6 +15,10 @@ displayUserName.appendChild(b);
 
 // form submit event ------------------
 addExpenseFrom.addEventListener("submit", addExpenseToDB);
+// Delete Event
+expenseTable.addEventListener("click", deleteExpense);
+// Buy Premium Event
+// premium.addEventListener("click", buyPremium);
 
 // addExpenseToDB--------------------------------
 
@@ -71,7 +76,7 @@ getAllExpenseFormBE();
 async function ShowDataOnFE(data) {
   // mapping the elements
 
-  const MAPdata = data.map((data) => {
+  data.map((data) => {
     let tr = document.createElement("tr");
     let tdAmount = document.createElement("td");
     let tdCategory = document.createElement("td");
@@ -79,10 +84,13 @@ async function ShowDataOnFE(data) {
 
     let tdEdit = document.createElement("td");
     let tdDelete = document.createElement("td");
+    let tdID = document.createElement("td");
+    tdID.style.display = "none";
+
     let btnEdit = document.createElement("edit");
     let btnDelete = document.createElement("delete");
-    btnEdit.className = "btn btn-outline-dark";
-    btnDelete.className = "btn btn-outline-danger";
+    btnEdit.className = "btn btn-outline-dark edit";
+    btnDelete.className = "btn btn-outline-danger delete";
     btnEdit.appendChild(document.createTextNode("Edit"));
     btnDelete.appendChild(document.createTextNode("Delete"));
 
@@ -91,6 +99,7 @@ async function ShowDataOnFE(data) {
     tdDescription.appendChild(document.createTextNode(data.description));
     tdEdit.appendChild(btnEdit);
     tdDelete.appendChild(btnDelete);
+    tdID.appendChild(document.createTextNode(data._id));
 
     tr.appendChild(tdAmount);
     tr.appendChild(tdDescription);
@@ -98,7 +107,102 @@ async function ShowDataOnFE(data) {
 
     tr.appendChild(tdEdit);
     tr.appendChild(tdDelete);
+    tr.appendChild(tdID);
 
     return expenseTable.appendChild(tr);
   });
 }
+
+// Dlete Expense From Backend ===========================================
+
+async function deleteExpense(e) {
+  if (e.target.classList.contains("delete"))
+    if (confirm("Are you sure you want to delete ?"))
+      var li = e.target.parentElement.parentElement;
+  console.log("DEL >>>", li.childNodes[5].innerText);
+  // --------------------------------
+  const token = localStorage.getItem("userIdToken");
+
+  try {
+    const response = await axios.delete(
+      `${baseUrl}/${li.childNodes[5].innerText}`,
+      {
+        headers: { Authorization: token },
+      }
+    );
+    console.log(response);
+  } catch (error) {
+    console.log(error);
+  }
+
+  expenseTable.removeChild(li);
+}
+
+// Ckeck Is Premium Account =====================================
+function checkForPremiumAccount(params) {
+  const token = localStorage.getItem("userIdToken");
+
+  const decodeJwtToken = (token) => {
+    var base64Url = token.split(".")[1];
+    var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    var jsonPayload = decodeURIComponent(
+      window
+        .atob(base64)
+        .split("")
+        .map(function (c) {
+          return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+        })
+        .join("")
+    );
+
+    return JSON.parse(jsonPayload);
+  };
+
+  const checkIsPremium = decodeJwtToken(token).ispremiumuser;
+  console.log(checkIsPremium);
+
+  if (checkIsPremium) {
+    document.getElementById("premiumMessage").style.display = "block";
+    document.getElementById("rzp-button1").style.display = "none";
+  } else {
+    document.getElementById("rzp-button1").style.display = "block";
+  }
+}
+checkForPremiumAccount();
+// ZAZORPAY  ------------------------------------------------
+
+document.getElementById("rzp-button1").onclick = async function (e) {
+  const token = localStorage.getItem("userIdToken");
+
+  const response = await axios.get("http://localhost:8000/api/purchase", {
+    headers: { Authorization: token },
+  });
+
+  console.log("RES::", response);
+
+  var options = {
+    key: response.data.key_id,
+    order_id: response.data.order.id,
+
+    handler: async function (response) {
+      const res = await axios.post(
+        "http://localhost:8000/api/purchase/updateTransactionStatus",
+        {
+          order_id: options.order_id,
+          payment_id: response.razorpay_payment_id,
+        },
+        {
+          headers: { Authorization: token },
+        }
+      );
+      alert("You are a Premium User Now");
+      console.log("RESS>>", res);
+
+      localStorage.setItem("userIdToken", res.data.token);
+      checkForPremiumAccount();
+    },
+  };
+  var rzp1 = new Razorpay(options);
+  e.preventDefault();
+  rzp1.open();
+};
