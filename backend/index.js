@@ -19,6 +19,7 @@ const userRouter = require("./routes/user");
 const expenseRouter = require("./routes/expense");
 const purchaseRouter = require("./routes/purchase");
 const premiumRouter = require("./routes/premium");
+const passwordRouter = require("./routes/password");
 
 const User = require("./models/user");
 const Expense = require("./models/expense");
@@ -35,6 +36,9 @@ app.use("/api", purchaseRouter);
 
 // Premium Routes
 app.use("/api/premium", premiumRouter);
+
+// Password Routes
+app.use("/api", passwordRouter);
 
 // server running on Port ------------------------------
 

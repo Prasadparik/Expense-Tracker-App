@@ -47,3 +47,33 @@ async function userLogIn(e) {
   logInForm.userEmail.value = "";
   logInForm.userPassword.value = "";
 }
+
+// FORGOT PASSWORD -----------------------------
+
+const forgotPassoword = document.getElementById("forgotPassoword");
+const resetPassForm = document.getElementById("resetPassword-form");
+
+forgotPassoword.addEventListener("click", openResetPassForm);
+resetPassForm.addEventListener("submit", resetPassword);
+
+function openResetPassForm(e) {
+  document.getElementById("login-form").style.display = "none";
+  document.getElementById("resetPassword-form").style.display = "block";
+}
+
+async function resetPassword(e) {
+  e.preventDefault();
+  const email = document.getElementById("resetEmail").value;
+  console.log("RESET", email);
+
+  // API call
+
+  try {
+    const response = await axios.post(`${baseUrl}password/forgotpassword `, {
+      email: email,
+    });
+    console.log("PassReset Res >>", response);
+  } catch (error) {
+    console.log(error);
+  }
+}
