@@ -37,6 +37,8 @@ async function userSignUp(e) {
     toastMessage("danger", error.response.data);
   }
 
+  location.href = "./login.html";
+
   //   cleaning input fields
   signUpForm.userName.value = "";
   signUpForm.userEmail.value = "";
