@@ -10,7 +10,9 @@ const displayUserName = document.getElementById("displayUserName");
 
 // displayUserName
 let b = document.createElement("b");
-b.appendChild(document.createTextNode(localStorage.getItem("userName")));
+b.appendChild(
+  document.createTextNode(`👋 ${localStorage.getItem("userName")}`)
+);
 displayUserName.appendChild(b);
 
 // form submit event ------------------
@@ -65,6 +67,27 @@ async function getAllExpenseFormBE() {
     console.log(resData.data);
 
     ShowDataOnFE(resData.data);
+
+    // filters ========================
+
+    const dailyFilter = document.getElementById("dailyFilter");
+    dailyFilter.addEventListener("click", () => {
+      expenseTable.textContent = "";
+      document.getElementById("filterHeading").innerHTML = "Daily Expenses";
+      ShowDataOnFE(resData.data, 0, 10);
+    });
+    const monthlyFilter = document.getElementById("monthlyFilter");
+    monthlyFilter.addEventListener("click", () => {
+      expenseTable.textContent = "";
+      document.getElementById("filterHeading").innerHTML = "Monthly Expenses";
+      ShowDataOnFE(resData.data, 0, 7);
+    });
+    const yearlyFilter = document.getElementById("yearlyFilter");
+    yearlyFilter.addEventListener("click", () => {
+      expenseTable.textContent = "";
+      document.getElementById("filterHeading").innerHTML = "Yearly Expenses";
+      ShowDataOnFE(resData.data, 0, 4);
+    });
   } catch (error) {
     console.log(error);
   }
@@ -73,10 +96,29 @@ getAllExpenseFormBE();
 
 // ShowDataOnFE =====================================================
 
-async function ShowDataOnFE(data) {
-  // mapping the elements
+async function ShowDataOnFE(data, start, end) {
+  // Date  Filter--------------
+  console.log("eaf", start, end);
 
-  data.map((data) => {
+  let s = start;
+  let e = end;
+  if (start === undefined) {
+    var filteredData = data;
+    console.log("filteredData", filteredData);
+  } else {
+    var filteredData = data.filter((data) => {
+      let updatedAt = data.updatedAt.slice(s, e);
+      let currentDate = new Date().toJSON().slice(s, e);
+      if (updatedAt === currentDate) {
+        return data;
+      }
+    });
+    console.log("filteredData", filteredData);
+    console.log("filteredData DATA", data, start, end);
+  }
+
+  // mapping the elements
+  filteredData.map((data) => {
     let tr = document.createElement("tr");
     let tdAmount = document.createElement("td");
     let tdCategory = document.createElement("td");
@@ -206,3 +248,13 @@ document.getElementById("rzp-button1").onclick = async function (e) {
   e.preventDefault();
   rzp1.open();
 };
+
+// Download Report ============================================================
+
+async function downloadReport(data) {
+  try {
+    // const response = await axios.get();
+  } catch (error) {
+    console.error(error);
+  }
+}
