@@ -58,15 +58,16 @@ async function addExpenseToDB(e) {
 
 // Get Data From Backend ===========================================
 
-async function getAllExpenseFormBE() {
+async function getAllExpenseFormBE(page = 1, row = 3) {
   const token = localStorage.getItem("userIdToken");
   try {
-    const resData = await axios.get(baseUrl, {
+    const resData = await axios.get(`${baseUrl}?page=${page}&limit=${row}`, {
       headers: { Authorization: token },
     });
-    console.log(resData.data);
-
-    ShowDataOnFE(resData.data);
+    console.log("PAGINATED RES >>", resData);
+    Pagination(resData.data);
+    expenseTable.textContent = "";
+    ShowDataOnFE(resData.data.expenseData);
 
     // filters ========================
 
@@ -266,4 +267,64 @@ async function downloadReport() {
   } catch (error) {
     console.error(error);
   }
+}
+
+// Pagination ===============================================
+
+function Pagination(data) {
+  let pagination = document.getElementById("pagination");
+  pagination.innerHTML = "";
+  let row = localStorage.getItem("rows");
+
+  if (data.hasPreviousPage) {
+    let btn1 = document.createElement("button");
+    btn1.innerHTML = `< ${data.previousPage}`;
+    btn1.className = "btn bg-dark-subtle fw-medium px-4 m-2";
+    pagination.appendChild(btn1);
+    btn1.addEventListener("click", () =>
+      getAllExpenseFormBE(data.previousPage, row)
+    );
+  }
+
+  let btn2 = document.createElement("button");
+  btn2.innerHTML = data.currentPage;
+  btn2.className = "btn bg-primary text-white  fs-6 fw-bold px-4 m-2";
+
+  pagination.appendChild(btn2);
+  btn2.addEventListener("click", () =>
+    getAllExpenseFormBE(data.currentPage, row)
+  );
+
+  if (data.hasNextPage) {
+    let btn3 = document.createElement("button");
+    btn3.innerHTML = `${data.nextPage} >`;
+    btn3.className = "btn bg-success-subtle fw-medium px-4 m-2";
+    pagination.appendChild(btn3);
+    btn3.addEventListener("click", () =>
+      getAllExpenseFormBE(data.nextPage, row)
+    );
+  }
+
+  //  rows filter --------------------------
+
+  const row1 = document.getElementById("row1");
+  row1.addEventListener("click", () => {
+    localStorage.setItem("rows", 5);
+    console.log("row>>", localStorage.getItem("rows"));
+    getAllExpenseFormBE(data.currentPage, localStorage.getItem("rows"));
+  });
+
+  const row2 = document.getElementById("row2");
+  row2.addEventListener("click", () => {
+    localStorage.setItem("rows", 10);
+    console.log("row>>", localStorage.getItem("rows"));
+    getAllExpenseFormBE(data.currentPage, localStorage.getItem("rows"));
+  });
+
+  const row3 = document.getElementById("row3");
+  row3.addEventListener("click", () => {
+    localStorage.setItem("rows", 15);
+    console.log("row>>", localStorage.getItem("rows"));
+    getAllExpenseFormBE(data.currentPage, localStorage.getItem("rows"));
+  });
 }

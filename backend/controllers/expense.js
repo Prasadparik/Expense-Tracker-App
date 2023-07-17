@@ -49,10 +49,29 @@ const addExpense = async (req, res) => {
 
 const getAllExpense = async (req, res) => {
   try {
-    console.log("getAllExpense BODY ===>", req.user._id);
+    // console.log("getAllExpense BODY ===>", req.user._id);
     const result = await Expense.findAll({ where: { userId: req.user._id } });
+    let page = Number(req.query.page);
+    let limit = Number(req.query.limit);
 
-    res.send(result);
+    // Paginating ----------
+    function Pagination(page, limit) {
+      const startIndex = (page - 1) * limit;
+      const endIndex = page * limit;
+      const sendPaginatedresult = result.slice(startIndex, endIndex);
+      return sendPaginatedresult;
+    }
+    const PaginatedResult = Pagination(page, limit);
+
+    res.status(200).json({
+      expenseData: PaginatedResult,
+      currentPage: page,
+      hasNextPage: page * limit < result.length,
+      nextPage: page + 1,
+      hasPreviousPage: page > 1,
+      previousPage: page - 1,
+      noOfPages: Math.ceil(result.length / limit),
+    });
   } catch (error) {
     res.send(error);
   }
