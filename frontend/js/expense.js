@@ -250,10 +250,19 @@ document.getElementById("rzp-button1").onclick = async function (e) {
 };
 
 // Download Report ============================================================
-
-async function downloadReport(data) {
+let download = document.getElementById("download");
+download.addEventListener("click", downloadReport);
+async function downloadReport() {
+  const token = localStorage.getItem("userIdToken");
   try {
-    // const response = await axios.get();
+    console.log("Download clicked");
+    const response = await axios.get(
+      "http://localhost:8000/api/expense/download",
+      {
+        headers: { Authorization: token },
+      }
+    );
+    console.log("Download: >>", response.data.fileUrl);
   } catch (error) {
     console.error(error);
   }

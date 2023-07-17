@@ -2,7 +2,9 @@
 
 const sequelize = require("../database");
 const Expense = require("../models/expense");
+const ReportDownload = require("../models/reportDownload");
 const User = require("../models/user");
+const AWS = require("aws-sdk");
 
 const addExpense = async (req, res) => {
   const t = await sequelize.transaction();
@@ -94,8 +96,63 @@ const deleteExpense = async (req, res) => {
   }
 };
 
+// Download ===============================================
+
+function uploadTos3(data, filename) {
+  const BUCKET_NAME = process.env.BUCKET_NAME;
+  const IAM_USER_KEY = process.env.IAM_USER_KEY;
+  const IAM_USER_SECRET = process.env.IAM_USER_SECRET;
+
+  let s3bucket = new AWS.S3({
+    accessKeyId: IAM_USER_KEY,
+    secretAccessKey: IAM_USER_SECRET,
+  });
+
+  var params = {
+    Bucket: BUCKET_NAME,
+    Key: filename,
+    Body: data,
+    ACL: "public-read",
+  };
+
+  return new Promise((resolve, reject) => {
+    s3bucket.upload(params, (err, s3response) => {
+      if (err) {
+        console.log("Something Went Wrong", err);
+        reject(err);
+      } else {
+        console.log("Success", s3response);
+        resolve(s3response.Location);
+      }
+    });
+  });
+}
+
+const downloadExpense = async (req, res) => {
+  try {
+    const expenses = await req.user.getExpenses();
+    const stringifyedExpenses = JSON.stringify(expenses);
+    const filename = `${req.user._id}-${
+      req.user.userName
+    }-${new Date()}-Expenses.txt`;
+    const fileUrl = await uploadTos3(stringifyedExpenses, filename);
+    console.log("FILE URL >>>", fileUrl);
+
+    // Adding file url to DB
+    const response = ReportDownload.create({
+      url: fileUrl,
+      userId: req.user._id,
+    });
+
+    res.status(200).json({ fileUrl, success: true });
+  } catch (error) {
+    res.status(500).json({ fileUrl, error: error });
+  }
+};
+
 module.exports = {
   addExpense,
   getAllExpense,
   deleteExpense,
+  downloadExpense,
 };

@@ -6,6 +6,7 @@ const {
   addExpense,
   getAllExpense,
   deleteExpense,
+  downloadExpense,
 } = require("../controllers/expense");
 const { Authenticate, AuthAddExpense } = require("../middleware/auth");
 
@@ -14,5 +15,6 @@ const { Authenticate, AuthAddExpense } = require("../middleware/auth");
 route.post("/", AuthAddExpense, addExpense);
 route.get("/", Authenticate, getAllExpense);
 route.delete("/:id", Authenticate, deleteExpense);
+route.get("/download", Authenticate, downloadExpense);
 
 module.exports = route;
