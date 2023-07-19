@@ -4,10 +4,12 @@ const User = require("../models/user");
 const Authenticate = async (req, res, next) => {
   try {
     const token = req.header("Authorization");
+    const filter = req.header("filter");
     const userToken = jwt.verify(token, "secretkey");
     const findUserByPK = await User.findByPk(userToken.userId);
     req.user = findUserByPK;
     req.token = userToken;
+    req.filter = filter;
   } catch (error) {
     console.log(error);
     res.sendStatus(401);

@@ -5,6 +5,7 @@ const Expense = require("../models/expense");
 const ReportDownload = require("../models/reportDownload");
 const User = require("../models/user");
 const AWS = require("aws-sdk");
+require("dotenv").config();
 
 const addExpense = async (req, res) => {
   const t = await sequelize.transaction();
@@ -49,16 +50,43 @@ const addExpense = async (req, res) => {
 
 const getAllExpense = async (req, res) => {
   try {
-    // console.log("getAllExpense BODY ===>", req.user._id);
+    console.log("FILTER BODY ===>", req.filter);
     const result = await Expense.findAll({ where: { userId: req.user._id } });
+
+    // Filter ---------------------------
+    if (req.filter === null || req.filter === "all") {
+      var filteredData = result;
+    }
+    var filteredData = result.filter((result) => {
+      if (req.filter === "daily") {
+        var updatedAt = result.dataValues.updatedAt.toJSON().slice(0, 10);
+        var currentDate = new Date().toJSON().slice(0, 10);
+      }
+      if (req.filter === "monthly") {
+        var updatedAt = result.dataValues.updatedAt.toJSON().slice(0, 7);
+        var currentDate = new Date().toJSON().slice(0, 7);
+      }
+      if (req.filter === "yearly") {
+        var updatedAt = result.dataValues.updatedAt.toJSON().slice(0, 4);
+        var currentDate = new Date().toJSON().slice(0, 4);
+      }
+
+      if (updatedAt === currentDate) {
+        return result.dataValues;
+      }
+    });
+
+    // console.log("filteredData >>", filteredData);
+
+    // -----------------------------------
+
     let page = Number(req.query.page);
     let limit = Number(req.query.limit);
-
     // Paginating ----------
     function Pagination(page, limit) {
       const startIndex = (page - 1) * limit;
       const endIndex = page * limit;
-      const sendPaginatedresult = result.slice(startIndex, endIndex);
+      const sendPaginatedresult = filteredData.slice(startIndex, endIndex);
       return sendPaginatedresult;
     }
     const PaginatedResult = Pagination(page, limit);
@@ -66,11 +94,11 @@ const getAllExpense = async (req, res) => {
     res.status(200).json({
       expenseData: PaginatedResult,
       currentPage: page,
-      hasNextPage: page * limit < result.length,
+      hasNextPage: page * limit < filteredData.length,
       nextPage: page + 1,
       hasPreviousPage: page > 1,
       previousPage: page - 1,
-      noOfPages: Math.ceil(result.length / limit),
+      noOfPages: Math.ceil(result.filteredData / limit),
     });
   } catch (error) {
     res.send(error);
@@ -140,7 +168,7 @@ function uploadTos3(data, filename) {
         console.log("Something Went Wrong", err);
         reject(err);
       } else {
-        console.log("Success", s3response);
+        // console.log("Success", s3response);
         resolve(s3response.Location);
       }
     });
@@ -155,7 +183,7 @@ const downloadExpense = async (req, res) => {
       req.user.userName
     }-${new Date()}-Expenses.txt`;
     const fileUrl = await uploadTos3(stringifyedExpenses, filename);
-    console.log("FILE URL >>>", fileUrl);
+    // console.log("FILE URL >>>", fileUrl);
 
     // Adding file url to DB
     const response = ReportDownload.create({

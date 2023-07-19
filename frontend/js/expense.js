@@ -19,6 +19,8 @@ displayUserName.appendChild(b);
 addExpenseFrom.addEventListener("submit", addExpenseToDB);
 // Delete Event
 expenseTable.addEventListener("click", deleteExpense);
+// Edit Event
+expenseTable.addEventListener("click", editExpense);
 // Buy Premium Event
 // premium.addEventListener("click", buyPremium);
 
@@ -58,11 +60,12 @@ async function addExpenseToDB(e) {
 
 // Get Data From Backend ===========================================
 
-async function getAllExpenseFormBE(page = 1, row = 3) {
+async function getAllExpenseFormBE(page = 1, row = 5) {
   const token = localStorage.getItem("userIdToken");
+  const filter = localStorage.getItem("filter");
   try {
     const resData = await axios.get(`${baseUrl}?page=${page}&limit=${row}`, {
-      headers: { Authorization: token },
+      headers: { Authorization: token, filter: filter },
     });
     console.log("PAGINATED RES >>", resData);
     Pagination(resData.data);
@@ -70,24 +73,37 @@ async function getAllExpenseFormBE(page = 1, row = 3) {
     ShowDataOnFE(resData.data.expenseData);
 
     // filters ========================
+    document.getElementById("filterName").innerHTML = `${localStorage.getItem(
+      "filter"
+    )}`;
+    document.getElementById("rowNumber").innerHTML = `${localStorage.getItem(
+      "rows"
+    )}`;
+    const allFilter = document.getElementById("allFilter");
+    allFilter.addEventListener("click", () => {
+      localStorage.setItem("filter", "all");
+      location.reload();
+
+      ShowDataOnFE(resData.data.expenseData);
+    });
 
     const dailyFilter = document.getElementById("dailyFilter");
     dailyFilter.addEventListener("click", () => {
-      expenseTable.textContent = "";
-      document.getElementById("filterHeading").innerHTML = "Daily Expenses";
-      ShowDataOnFE(resData.data, 0, 10);
+      localStorage.setItem("filter", "daily");
+      location.reload();
+      ShowDataOnFE(resData.data.expenseData);
     });
     const monthlyFilter = document.getElementById("monthlyFilter");
     monthlyFilter.addEventListener("click", () => {
-      expenseTable.textContent = "";
-      document.getElementById("filterHeading").innerHTML = "Monthly Expenses";
-      ShowDataOnFE(resData.data, 0, 7);
+      localStorage.setItem("filter", "monthly");
+      location.reload();
+      ShowDataOnFE(resData.data.expenseData);
     });
     const yearlyFilter = document.getElementById("yearlyFilter");
     yearlyFilter.addEventListener("click", () => {
-      expenseTable.textContent = "";
-      document.getElementById("filterHeading").innerHTML = "Yearly Expenses";
-      ShowDataOnFE(resData.data, 0, 4);
+      localStorage.setItem("filter", "yearly");
+      location.reload();
+      ShowDataOnFE(resData.data.expenseData);
     });
   } catch (error) {
     console.log(error);
@@ -97,29 +113,10 @@ getAllExpenseFormBE();
 
 // ShowDataOnFE =====================================================
 
-async function ShowDataOnFE(data, start, end) {
+async function ShowDataOnFE(data) {
   // Date  Filter--------------
-  console.log("eaf", start, end);
-
-  let s = start;
-  let e = end;
-  if (start === undefined) {
-    var filteredData = data;
-    console.log("filteredData", filteredData);
-  } else {
-    var filteredData = data.filter((data) => {
-      let updatedAt = data.updatedAt.slice(s, e);
-      let currentDate = new Date().toJSON().slice(s, e);
-      if (updatedAt === currentDate) {
-        return data;
-      }
-    });
-    console.log("filteredData", filteredData);
-    console.log("filteredData DATA", data, start, end);
-  }
-
   // mapping the elements
-  filteredData.map((data) => {
+  data.map((data) => {
     let tr = document.createElement("tr");
     let tdAmount = document.createElement("td");
     let tdCategory = document.createElement("td");
@@ -162,8 +159,45 @@ async function deleteExpense(e) {
   if (e.target.classList.contains("delete"))
     if (confirm("Are you sure you want to delete ?"))
       var li = e.target.parentElement.parentElement;
-  console.log("DEL >>>", li.childNodes[5].innerText);
   // --------------------------------
+  const token = localStorage.getItem("userIdToken");
+
+  try {
+    const response = await axios.delete(
+      `${baseUrl}/${li.childNodes[5].innerText}`,
+      {
+        headers: { Authorization: token },
+      }
+    );
+    console.log(response);
+  } catch (error) {
+    console.log(error);
+  }
+
+  expenseTable.removeChild(li);
+}
+
+// EDIT Expense From Backend ===========================================
+
+async function editExpense(e) {
+  if (e.target.classList.contains("edit"))
+    if (confirm("Are you sure you want to Edit ?"))
+      var li = e.target.parentElement.parentElement;
+  // --------------------------------
+
+  // Getting Edit data from BE
+  let id = li.childNodes[5].innerText;
+  let amount = li.childNodes[0].innerText;
+  let description = li.childNodes[1].innerText;
+  let category = li.childNodes[2].innerText;
+  console.log(id, amount, description, category);
+
+  //   Fill input fields
+  addExpenseFrom.amount.value = amount;
+  addExpenseFrom.category.value = category;
+  addExpenseFrom.description.value = description;
+  // ------------------------
+  // DELETING EXPENSE FROM BE
   const token = localStorage.getItem("userIdToken");
 
   try {
@@ -207,8 +241,14 @@ function checkForPremiumAccount(params) {
   if (checkIsPremium) {
     document.getElementById("premiumMessage").style.display = "block";
     document.getElementById("rzp-button1").style.display = "none";
+    document.getElementById("LeaderboardList").style.display = "block";
+    document.getElementById("download").style.display = "block";
+    document.getElementById("DownloadList").style.display = "block";
   } else {
     document.getElementById("rzp-button1").style.display = "block";
+    // document.getElementById("LeaderboardList").style.display = "none";
+    document.getElementById("download").style.display = "none";
+    document.getElementById("DownloadList").style.display = "none";
   }
 }
 checkForPremiumAccount();
@@ -263,6 +303,7 @@ async function downloadReport() {
         headers: { Authorization: token },
       }
     );
+    location.href = response.data.fileUrl;
     console.log("Download: >>", response.data.fileUrl);
   } catch (error) {
     console.error(error);

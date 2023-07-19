@@ -144,7 +144,10 @@
             </li> -->
             <li class="nav-item">
               <a class="nav-link text-white" href="./pages/login.html"
-                ><button class="btn btn-outline-danger" type="submit">
+                ><button
+                  class="btn bg-danger-subtle text-danger fw-medium"
+                  type="submit"
+                >
                   Log Out
                 </button></a
               >
@@ -203,16 +206,6 @@
               />
             </form>
           </div>
-
-          <!-- Leader Board ================================================= -->
-
-          <div class="my-5">
-            <div class="p-4 shadow-sm fw-bold bg-dark text-white">
-              Leaderboard
-            </div>
-
-            <ul id="LeaderboardList" class="list-group"></ul>
-          </div>
         </div>
 
         <!-- ============================================================ -->
@@ -223,25 +216,23 @@
               id="filterHeading"
               class="text-white flex-grow-1 align-items-center p-2"
             >
-              All Expenses
+              Expenses
             </h5>
+
             <div class="dropdown pt-1">
-              <button
-                id="download"
-                class="btn bg-success-subtle px-4 fw-medium text-success"
-                type="button"
-              >
-                Download
-              </button>
               <button
                 class="btn bg-warning-subtle px-4 dropdown-toggle fw-medium"
                 type="button"
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
+                id="filterName"
               >
                 Filter
               </button>
               <ul class="dropdown-menu">
+                <li id="allFilter">
+                  <a class="dropdown-item" href="#">All</a>
+                </li>
                 <li id="dailyFilter">
                   <a class="dropdown-item" href="#">Daily</a>
                 </li>
@@ -259,6 +250,7 @@
                 type="button"
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
+                id="rowNumber"
               >
                 Rows
               </button>
@@ -275,6 +267,14 @@
               </ul>
               <!-- EndRow Number --------------------------- -->
             </div>
+            <button
+              id="download"
+              class="btn bg-success-subtle ms-4 fw-bold px-4 mt-1 text-success"
+              type="button"
+              style="max-height: 2.3rem"
+            >
+              Download
+            </button>
           </div>
           <table class="table">
             <thead class="shadow-sm rounded">
@@ -310,18 +310,55 @@
           <!-- pagination -->
           <div
             id="pagination"
-            class="d-flex justify-content-center bg-white"
+            class="d-flex justify-content-center bg-white rounded shadow-sm"
           ></div>
         </div>
       </div>
     </div>
 
+    <!--  Leader board and Download Histoy -->
+
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <!-- Download History Board ================================================= -->
+
+          <div class="my-5">
+            <ul id="DownloadList" style="" class="list-group">
+              <div class="p-4 shadow-sm fw-bold bg-dark text-white">
+                Download History
+              </div>
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <!-- Leader Board ================================================= -->
+
+          <div class="my-5">
+            <ul id="LeaderboardList" style="display: none" class="list-group">
+              <div class="p-4 shadow-sm fw-bold bg-dark text-white">
+                Leaderboard
+              </div>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- footer-------------------------------------------- -->
-    <div class="bg-dark-subtle" style="height: 200px"></div>
+    <div class="text-center bg-dark text-white py-5">
+      <div class="card-body">
+        <div class="card-footer text-white">
+          <b class="title">Expense Tracker</b>
+          Made With ❤
+        </div>
+      </div>
+    </div>
 
     <!-- -------------------------------------------------------------------- -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="./js/leaderboard.js"></script>
+    <script src="./js/downloadHistory.js"></script>
     <script src="./js/expense.js"></script>
   </body>
 </html>

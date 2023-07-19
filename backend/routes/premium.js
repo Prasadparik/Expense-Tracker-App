@@ -2,11 +2,15 @@
 const express = require("express");
 const route = express.Router();
 
-const { getUserLeaderBoard } = require("../controllers/premium");
+const {
+  getUserLeaderBoard,
+  getUserDownload,
+} = require("../controllers/premium");
 const { Authenticate } = require("../middleware/auth");
 
 // User Routes -----------------------------------------
 
-route.get("/leaderboard", getUserLeaderBoard);
+route.get("/leaderboard", Authenticate, getUserLeaderBoard);
+route.get("/downloadhistory", Authenticate, getUserDownload);
 
 module.exports = route;

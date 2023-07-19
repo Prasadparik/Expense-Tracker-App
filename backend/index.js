@@ -2,6 +2,8 @@
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
+const helmet = require("helmet");
+const compression = require("compression");
 
 // DataBase -------------------------------------------
 const sequelize = require("./database");
@@ -11,6 +13,8 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(helmet());
+app.use(compression());
 
 // Routes ---------------------------------------------
 
@@ -55,7 +59,10 @@ Order.belongsTo(ReportDownload);
 const runServer = async () => {
   try {
     await sequelize.sync();
-    app.listen(8000, console.log("SERVER RUNNING ON PORT => 8000"));
+    app.listen(
+      process.env.PORT || 3000,
+      console.log(`SERVER RUNNING ON PORT =>`, process.env.PORT)
+    );
   } catch (error) {
     console.log(error);
   }

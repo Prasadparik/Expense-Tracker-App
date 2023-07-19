@@ -1,6 +1,7 @@
 const Razorpay = require("razorpay");
 const Order = require("../models/order");
 var jwt = require("jsonwebtoken");
+require("dotenv").config();
 
 // ==========================================================
 
@@ -11,8 +12,8 @@ function generateAccessToken(obj) {
 
 // ==========================================================
 
-const RAZORPAY_KEY_ID = "rzp_test_zgMhhgeBtmAaXW";
-const RAZORPAY_KEY_SECRET = "IEAA7aGTgOPAEDrFPDweEPhf";
+const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID;
+const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET;
 
 const userController = require("./user");
 
