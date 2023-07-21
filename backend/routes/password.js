@@ -1,10 +1,19 @@
 const express = require("express");
 const route = express.Router();
 
-const { resetPassword } = require("../controllers/password");
+const {
+  forgotpassword,
+  resetpassword,
+  updatepassword,
+} = require("../controllers/password");
 const { Authenticate } = require("../middleware/auth");
 
 // ROUTES ----------------------------
 
-route.post("/password/forgotpassword", resetPassword);
+route.use("/forgotpassword", forgotpassword);
+
+route.get("/resetpassword/:id", resetpassword);
+
+route.get("/updatepassword/:id", updatepassword);
+
 module.exports = route;

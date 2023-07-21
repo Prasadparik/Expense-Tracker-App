@@ -29,6 +29,7 @@ const User = require("./models/user");
 const Expense = require("./models/expense");
 const Order = require("./models/order");
 const ReportDownload = require("./models/reportDownload");
+const Forgotpassword = require("./models/forgotpassword");
 
 // User Routes
 app.use("/api/", userRouter);
@@ -43,7 +44,7 @@ app.use("/api", purchaseRouter);
 app.use("/api/premium", premiumRouter);
 
 // Password Routes
-app.use("/api", passwordRouter);
+app.use("/api/password", passwordRouter);
 
 // server running on Port ------------------------------
 
@@ -55,6 +56,9 @@ Order.belongsTo(User);
 
 User.hasMany(ReportDownload);
 Order.belongsTo(ReportDownload);
+
+User.hasMany(Forgotpassword);
+Forgotpassword.belongsTo(User);
 
 const runServer = async () => {
   try {
