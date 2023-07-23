@@ -63,10 +63,7 @@ Forgotpassword.belongsTo(User);
 const runServer = async () => {
   try {
     await sequelize.sync();
-    app.listen(
-      process.env.PORT || 3000,
-      console.log(`SERVER RUNNING ON PORT =>`, process.env.PORT)
-    );
+    app.listen(3000, console.log(`SERVER RUNNING ON PORT => 3000`));
   } catch (error) {
     console.log(error);
   }
