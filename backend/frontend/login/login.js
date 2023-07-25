@@ -1,5 +1,5 @@
 // API Call --------------------------------
-const baseUrl = `http://localhost:8000/api/`;
+const baseUrl = `http://16.171.8.200:3000/api/`;
 
 const logInForm = document.getElementById("login-form");
 const messageBox = document.getElementById("message-box");
@@ -39,6 +39,7 @@ async function userLogIn(e) {
   } catch (error) {
     console.log("Error", error);
     let notifyText = "";
+    ``;
     if (error.response.status === 401) notifyText = "Password Is Incorrect !!";
     toastMessage("danger", notifyText);
   }

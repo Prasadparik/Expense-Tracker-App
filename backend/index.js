@@ -4,6 +4,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const helmet = require("helmet");
 const compression = require("compression");
+const path = require("path");
 
 // DataBase -------------------------------------------
 const sequelize = require("./database");
@@ -13,7 +14,7 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(helmet());
+// app.use(helmet());
 app.use(compression());
 
 // Routes ---------------------------------------------
@@ -45,6 +46,11 @@ app.use("/api/premium", premiumRouter);
 
 // Password Routes
 app.use("/api/password", passwordRouter);
+
+// Frontend Routes
+app.use((req, res) => {
+  res.sendFile(path.join(__dirname, `frontend/${req.url}`));
+});
 
 // server running on Port ------------------------------
 

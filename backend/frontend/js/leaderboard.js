@@ -1,5 +1,5 @@
 // API URL ====================================================
-const leaderboardAPIUrl = `http://localhost:8000/api/premium/leaderboard`;
+const leaderboardAPIUrl = `http://16.171.8.200:3000/api/premium/leaderboard`;
 
 addEventListener("DOMContentLoaded", async (e) => {
   const token = localStorage.getItem("userIdToken");

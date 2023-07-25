@@ -1,6 +1,6 @@
 // API URL ====================================================
 
-const baseUrl = `http://localhost:8000/api/expense`;
+const baseUrl = `http://16.171.8.200:3000/api/expense`;
 
 // ===========================================================
 const addExpenseFrom = document.getElementById("addExpenseFrom");
@@ -257,7 +257,7 @@ checkForPremiumAccount();
 document.getElementById("rzp-button1").onclick = async function (e) {
   const token = localStorage.getItem("userIdToken");
 
-  const response = await axios.get("http://localhost:8000/api/purchase", {
+  const response = await axios.get("http://16.171.8.200:3000/api/purchase", {
     headers: { Authorization: token },
   });
 
@@ -269,7 +269,7 @@ document.getElementById("rzp-button1").onclick = async function (e) {
 
     handler: async function (response) {
       const res = await axios.post(
-        "http://localhost:8000/api/purchase/updateTransactionStatus",
+        "http://16.171.8.200:3000/api/purchase/updateTransactionStatus",
         {
           order_id: options.order_id,
           payment_id: response.razorpay_payment_id,
@@ -298,7 +298,7 @@ async function downloadReport() {
   try {
     console.log("Download clicked");
     const response = await axios.get(
-      "http://localhost:8000/api/expense/download",
+      "http://16.171.8.200:3000/api/expense/download",
       {
         headers: { Authorization: token },
       }

@@ -1,5 +1,5 @@
 // API Call --------------------------------
-const baseUrl = `http://localhost:8000/api/`;
+const baseUrl = `http://16.171.8.200:3000/api/`;
 
 const signUpForm = document.getElementById("signup-form");
 const messageBox = document.getElementById("message-box");
@@ -37,7 +37,7 @@ async function userSignUp(e) {
     toastMessage("danger", error.response.data);
   }
 
-  location.href = "./login.html";
+  location.href = "../login/login.html";
 
   //   cleaning input fields
   signUpForm.userName.value = "";
