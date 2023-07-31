@@ -1,5 +1,5 @@
 // API URL ====================================================
-const downloadAPIUrl = `http://16.171.8.200:3000/api/premium/downloadhistory`;
+const downloadAPIUrl = `http://16.171.170.198:3000/api/premium/downloadhistory`;
 
 addEventListener("DOMContentLoaded", async (e) => {
   const token = localStorage.getItem("userIdToken");

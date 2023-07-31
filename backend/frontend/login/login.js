@@ -1,5 +1,5 @@
 // API Call --------------------------------
-const baseUrl = `http://16.171.8.200:3000/api/`;
+const baseUrl = `http://16.171.170.198:3000/api/`;
 
 const logInForm = document.getElementById("login-form");
 const messageBox = document.getElementById("message-box");
