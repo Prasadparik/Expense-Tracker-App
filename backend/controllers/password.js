@@ -39,7 +39,7 @@ const forgotpassword = async (req, res) => {
         to: email,
         subject: "Reset Password",
         text: "Click on the buttton to reset Password",
-        html: `<a href="http://localhost:8000/api/password/resetpassword/${id}">Reset password</a>`,
+        html: `<a href="http://16.171.170.198:3000/api/password/resetpassword/${id}">Reset password</a>`,
       });
 
       console.log("Message sent: %s", info.messageId);
