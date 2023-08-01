@@ -37,7 +37,9 @@ const getUserDownload = async (req, res) => {
   try {
     // console.log("LB REQ >>>>> ", req.body);
 
-    const usersDownload = await ReportDownload.findAll();
+    const usersDownload = await ReportDownload.findAll({
+      where: { userId: req.user._id },
+    });
     // console.log("DOWNLOAD LIST >>>>> ", usersDownload);
     res.status(200).json(usersDownload);
   } catch (error) {
